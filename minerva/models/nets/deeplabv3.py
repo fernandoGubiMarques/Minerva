@@ -1,9 +1,12 @@
 from typing import Dict, Optional, Sequence
 
+import torch
+import math
 from torch import Tensor, load, nn, optim
 from torchmetrics import Metric
 from torchvision.models.resnet import resnet50
 from torchvision.models.segmentation.deeplabv3 import ASPP
+from torchvision.transforms import Resize
 
 from minerva.models.nets.base import SimpleSupervisedModel
 
@@ -148,3 +151,15 @@ class DeepLabV3PredictionHead(nn.Sequential):
             nn.ReLU(),
             nn.Conv2d(256, num_classes, 1),
         )
+
+class ConvTranspose_Head(nn.Sequential):
+    def __init__(
+        self,
+        final_shape: torch.Size,
+        depth: int = 3,
+        in_channels: int = 2048,
+        out_channels: int = 3,
+    ):
+        C = torch.logspace(math.log2(in_channels), math.log2(out_channels), depth + 1, 2).to(torch.int)
+        modules = [nn.ConvTranspose2d(C[i], C[i+1], 3, 2) for i in range(depth)] + [Resize(final_shape)]
+        super().__init__(*modules)
