@@ -153,7 +153,7 @@ class DeepLabV3PredictionHead(nn.Sequential):
         )
 
 class ConvTranspose_Head(nn.Sequential):
-    """A projection head for DeepLabV3 consisting of chained ConvTransposed2d followed by bilinear resizing."""
+    """A projection head for DeepLabV3 consisting of chained ConvTransposed2d followed by a bilinear resizing."""
 
     def __init__(
         self,
