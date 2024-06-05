@@ -153,6 +153,8 @@ class DeepLabV3PredictionHead(nn.Sequential):
         )
 
 class ConvTranspose_Head(nn.Sequential):
+    """A projection head for DeepLabV3 consisting of chained ConvTransposed2d followed by bilinear resizing."""
+
     def __init__(
         self,
         final_shape: torch.Size,
@@ -160,6 +162,20 @@ class ConvTranspose_Head(nn.Sequential):
         in_channels: int = 2048,
         out_channels: int = 3,
     ):
+        """
+        Initializes the projection head
+
+        Parameters
+        ----------
+        final_shape: Sequence[int]
+            A tuple containing the final width and height that the projection head should return.
+        depth: int
+            The number of chained ConvTranspose2d that this module should have. Defaults to 3
+        in_channels:
+            The number of input channels. Defaults to 2048
+        out_channels:
+            The number of output channels. Defaults to 3
+        """
         C = torch.logspace(math.log2(in_channels), math.log2(out_channels), depth + 1, 2).to(torch.int)
         modules = [nn.ConvTranspose2d(C[i], C[i+1], 3, 2) for i in range(depth)] + [Resize(final_shape)]
         super().__init__(*modules)
