@@ -1,3 +1,3 @@
-from .transform import Flip, PerlinMasker, TransformPipeline, _Transform
+from .transform import Flip, PerlinMasker, TransformPipeline, _Transform, Identity
 
-__all__ = ["Flip", "PerlinMasker", "TransformPipeline", "_Transform"]
+__all__ = ["Flip", "PerlinMasker", "TransformPipeline", "_Transform", "Identity"]

@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Sequence
 from numpy.typing import ArrayLike
 import numpy as np
 
@@ -13,14 +13,14 @@ class MultiReader(_Reader):
 
     def __init__(
         self,
-        *readers: _Reader,
+        readers: Sequence[_Reader],
         collate_fn: Optional[Callable] = None
     ):
         """Collects data from multiple readers and collates them
         
         Parameters
         ----------
-        *readers: _Reader
+        readers: Sequence[_Reader]
             The readers from which the data will be collected. At least one must be
             provided. If the readers have different lengths, data will only be
             collected up until the length of the smallest child-reader.

@@ -193,3 +193,9 @@ class Padding(_Transform):
 
         padded = np.transpose(padded, (2, 0, 1))
         return padded
+
+
+class Identity(_Transform):
+
+    def __call__(self, x):
+        return x
