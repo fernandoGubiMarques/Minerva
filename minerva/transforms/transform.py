@@ -1,9 +1,10 @@
 from itertools import product
-from typing import Any, List, Sequence
+from typing import Any, List, Sequence, Union
 
 import numpy as np
 import torch
 from perlin_noise import PerlinNoise
+import torchvision.transforms
 
 
 class _Transform:
@@ -195,7 +196,6 @@ class Padding(_Transform):
         return padded
 
 
-class Identity(_Transform):
-
-    def __call__(self, x):
-        return x
+class NumpyToTorch(_Transform):
+    def __call__(self, x: np.ndparray) -> torch.Tensor:
+        return torch.from_numpy(x)
