@@ -26,27 +26,28 @@ class MultiReader(_Reader):
             collected up until the length of the smallest child-reader.
         collate_fn: Callable
             A function that recieves a list of items read from the child-readers and
-            returns a single item for this reader. Defaults to numpy.stack, which
-            means it is not optional if the child-readers are not returning single
+            returns a single item for this reader. Defaults to numpy.concatenate, which
+            means it is not optional if the child-readers are not returning same-shape
             numpy arrays.
         """
         assert len(readers) > 0, "MultiReader expects at least one reader as argument."
         
-        self._length = min(len(reader) for reader in readers)
         self._readers = readers
-        self.collate_fn = collate_fn or np.stack
+        self.collate_fn = collate_fn or np.concatenate
     
     def __len__(self) -> int:
-        """Returns the length of the smallest child-reader
+        """Returns the length the reader, defined as the length of the smallest
+        child-reader
         
         Returns
         -------
         int
             The length of the reader."""
-        return self._length
+        return  min(len(reader) for reader in self._readers)
     
     def __getitem__(self, index: int) -> Any:
-        """Retrieves the items from each reader at the specified index and collates them accordingly.
+        """Retrieves the items from each reader at the specified index and collates them
+        accordingly.
 
         Parameters
         ----------
