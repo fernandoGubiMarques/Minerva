@@ -1,6 +1,6 @@
 import torch
 
-from minerva.models.nets.deeplabv3 import DeepLabV3, DeepLabV3Backbone
+from minerva.models.nets.deeplabv3 import DeepLabV3, DeepLabV3Backbone, ConvTransposeHead
 
 
 def test_deeplabv3_model():
@@ -50,6 +50,22 @@ def test_deeplabv3_backbone():
 
     # Test the unfreeze_weights method
     backbone.unfreeze_weights()
+
+
+def test_deeplabv3_convhead():
+
+    # Test the class instantiation
+    head = ConvTransposeHead([701, 255])
+    assert head is not None
+
+    # Test the forward method
+    input_shape = (2, 2048, 88, 32)
+    expected_output_size = torch.Size([2, 3, 701, 255])
+    x = torch.rand(*input_shape)
+    output = head(x)
+    assert (
+        output.shape == expected_output_size
+    ), f"Expected output shape {input_shape}, but got {output.shape}"
 
 
 def test_deeplabv3_save_restore():
