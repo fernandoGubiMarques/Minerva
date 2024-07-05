@@ -1,4 +1,7 @@
-from typing import Dict, Optional, Sequence
+from typing import Dict, Optional, Sequence, Union
+import torch
+import math
+from torchvision.transforms import Resize
 
 from torch import Tensor, nn, optim
 from torchmetrics import Metric
@@ -148,3 +151,31 @@ class DeepLabV3PredictionHead(nn.Sequential):
             nn.ReLU(),
             nn.Conv2d(256, num_classes, 1),
         )
+
+class ConvTransposeHead(nn.Sequential):
+    """A projection head for DeepLabV3 consisting of chained ConvTransposed2d followed by a bilinear resizing."""
+
+    def __init__(
+        self,
+        final_shape: Union[torch.Size, Sequence[int]],
+        depth: int = 3,
+        in_channels: int = 2048,
+        out_channels: int = 3,
+    ):
+        """
+        Initializes the projection head
+
+        Parameters
+        ----------
+        final_shape: Union[torch.Size, Tuple[int], List[int]]
+            A tuple containing the final width and height that the projection head should return.
+        depth: int
+            The number of chained ConvTranspose2d that this module should have. Defaults to 3
+        in_channels:
+            The number of input channels. Defaults to 2048
+        out_channels:
+            The number of output channels. Defaults to 3
+        """
+        C = torch.logspace(math.log2(in_channels), math.log2(out_channels), depth + 1, 2).to(torch.int)
+        modules = [nn.ConvTranspose2d(C[i], C[i+1], 3, 2) for i in range(depth)] + [Resize(final_shape)]
+        super().__init__(*modules)
