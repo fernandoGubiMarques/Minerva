@@ -1,7 +1,7 @@
 import lightning as L
 import torch
 from torch import nn, optim
-from minerva.losses.infonce import InfoNCELoss
+from minerva.losses.info_nce import InfoNCELoss
 from typing import Tuple
 
 
@@ -24,7 +24,7 @@ class ContrastivePredictiveCoding(L.LightningModule):
         min_context_size: int = 0,
     ):
         """
-        Initialize the ConstrastivePredictiveCoding module. 
+        Initialize the ConstrastivePredictiveCoding module.
 
         Parameters
         ----------
